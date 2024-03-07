@@ -51,22 +51,25 @@ export default function ServerModel() {
 
         camera.position.z = 5; // Adjust the camera position
 
-        scene.add(obj);
-
+        scene.add(obj as THREE.Object3D<THREE.Object3DEventMap>);
         // Add lights, controls, etc. as needed
         // Attach controls to the canvas
-        const controls = new OrbitControls(camera, renderer.domElement);
-        controls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
-        controls.dampingFactor = 0.25;
-        controls.screenSpacePanning = false;
-        controls.maxPolarAngle = Math.PI / 2;
+        // const controls = new OrbitControls(camera, renderer.domElement);
+        // controls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
+        // controls.dampingFactor = 0.25;
+        // controls.screenSpacePanning = false;
+        // controls.maxPolarAngle = Math.PI / 2;
+        // controls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
+        // controls.dampingFactor = 0.25;
+        // controls.screenSpacePanning = false;
+        // controls.maxPolarAngle = Math.PI / 2;
 
         // Animation loop
         const animate = () => {
           requestAnimationFrame(animate);
 
           // Add any custom animations or updates here
-          controls.update();
+          // controls.update();
 
           // Render the scene
           renderer.render(scene, camera);
