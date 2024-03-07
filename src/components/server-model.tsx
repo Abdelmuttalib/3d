@@ -1,8 +1,9 @@
-// ThreeModel.js
 import React, { useEffect, useState } from "react";
 import { Canvas } from "react-three-fiber";
 import { OBJLoader } from "three/addons/loaders/OBJLoader.js";
 import { MTLLoader } from "three/addons/loaders/MTLLoader.js";
+import { OrbitControls } from "@react-three/drei";
+import * as THREE from "three";
 
 export default function ServerModel() {
   const [loadingProgress, setLoadingProgress] = useState(0);
@@ -10,16 +11,12 @@ export default function ServerModel() {
   useEffect(() => {
     const loadModel = async () => {
       try {
-        // Replace with the actual server path to your .obj and .mtl files
-        const serverPath = "http://170.64.201.209/objects";
-        const objPath = `${serverPath}/BlockABYBA/BlockABYBA.obj`;
-        const mtlPath = `${serverPath}/BlockABYBA/BlockABYBA.mtl`;
+        const objPath = "/Cottage_FREE.obj";
+        const mtlPath = "/Cottage_FREE.mtl";
 
-        // Load materials
         const materials = await new MTLLoader().loadAsync(mtlPath);
         materials.preload();
 
-        // Load object
         const objLoader = new OBJLoader();
         objLoader.setMaterials(materials);
 
@@ -37,7 +34,6 @@ export default function ServerModel() {
           );
         });
 
-        // Create Three.js scene and load the object
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(
           75,
@@ -47,17 +43,30 @@ export default function ServerModel() {
         );
         const renderer = new THREE.WebGLRenderer();
         renderer.setSize(window.innerWidth, window.innerHeight);
+
+        // Set the background color
+        renderer.setClearColor(new THREE.Color(0xeeeeee));
+
         document.body.appendChild(renderer.domElement);
+
+        camera.position.z = 5; // Adjust the camera position
 
         scene.add(obj);
 
         // Add lights, controls, etc. as needed
+        // Attach controls to the canvas
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
+        controls.dampingFactor = 0.25;
+        controls.screenSpacePanning = false;
+        controls.maxPolarAngle = Math.PI / 2;
 
         // Animation loop
         const animate = () => {
           requestAnimationFrame(animate);
 
           // Add any custom animations or updates here
+          controls.update();
 
           // Render the scene
           renderer.render(scene, camera);
@@ -78,8 +87,13 @@ export default function ServerModel() {
         <div>Loading... {loadingProgress}%</div>
       ) : (
         <Canvas
+          camera={{ position: [0, 0, 5] }}
           style={{ display: loadingProgress === 100 ? "block" : "none" }}
-        />
+        >
+          <ambientLight intensity={0.5} />
+          <pointLight position={[10, 10, 10]} />
+          {/* <OrbitControls /> */}
+        </Canvas>
       )}
     </div>
   );

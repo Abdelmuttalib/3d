@@ -12,21 +12,31 @@ const inter = Inter({ subsets: ["latin"] });
 export default function Home() {
   return (
     <main
-      className={`flex min-h-screen flex-col items-center justify-between p-24 ${inter.className}`}
+      className={`flex min-h-screen flex-col h-full p-24 ${inter.className}`}
     >
-      <ServerModel />
-      {/* <Model /> */}
+      {/* <ServerModel /> */}
+      <Model />
     </main>
   );
 }
 
 const Model = () => {
   return (
-    <Canvas camera={{ position: [0, 0, 5] }} className="h-[100vh]">
+    <Canvas
+      camera={{ position: [0, 0, 5] }}
+      className="h-full"
+      style={{
+        width: "100%",
+        height: "100%",
+        // position: "absolute",
+        // top: 0,
+        // left: 0,
+      }}
+    >
       <ambientLight intensity={0.5} />
       <pointLight position={[10, 10, 10]} />
 
-      <ModelObject />
+      <M />
 
       <OrbitControls />
     </Canvas>
@@ -36,6 +46,28 @@ const Model = () => {
 const ModelObject = () => {
   const objPath = "/Cottage_FREE.obj";
   const mtlPath = "/Cottage_FREE.mtl"; // Make sure to adjust the path
+
+  const objLoader = new OBJLoader();
+  const mtlLoader = new MTLLoader();
+
+  const materials = useLoader(MTLLoader, mtlPath);
+
+  objLoader.setMaterials(materials);
+
+  const obj = useLoader(OBJLoader, objPath);
+
+  // Debugging statements
+  console.log("Loaded object:", obj);
+  console.log("Loaded materials:", materials);
+
+  return <primitive object={obj} />;
+};
+const M = () => {
+  const serverPath = "http://170.64.201.209/objects";
+  const objPath = `${serverPath}/BlockABYBA/BlockABYBA.obj`;
+  const mtlPath = `${serverPath}/BlockABYBA/BlockABYBA.mtl`;
+  // const objPath = "/Cottage_FREE.obj";
+  // const mtlPath = "/Cottage_FREE.mtl"; // Make sure to adjust the path
 
   const objLoader = new OBJLoader();
   const mtlLoader = new MTLLoader();
